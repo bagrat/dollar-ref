@@ -1,4 +1,4 @@
-from dollar_ref import resolve_local
+from dollar_ref import resolve
 
 
 def test_basic():
@@ -10,7 +10,7 @@ def test_basic():
         }
     }
 
-    resolved = resolve_local(data)
+    resolved = resolve(data)
 
     assert resolved == {
         **data,
@@ -29,7 +29,7 @@ def test_object():
         }
     }
 
-    resolved = resolve_local(data)
+    resolved = resolve(data)
 
     assert resolved == {
         **data,
@@ -50,7 +50,7 @@ def test_nested():
         }
     }
 
-    resolved = resolve_local(data)
+    resolved = resolve(data)
 
     assert resolved == {
         **data,
@@ -60,11 +60,11 @@ def test_nested():
 
 
 def test_empty():
-    assert {} == resolve_local({})
+    assert {} == resolve({})
 
 
 def test_non_dict():
-    assert 1234 == resolve_local(1234)
+    assert 1234 == resolve(1234)
 
 
 def test_list():
@@ -76,7 +76,7 @@ def test_list():
         ]
     }
 
-    resolved = resolve_local(data)
+    resolved = resolve(data)
 
     assert resolved == {
         'some': 'data',
@@ -106,7 +106,7 @@ def test_complicated():
         }
     }
 
-    resolved = resolve_local(data)
+    resolved = resolve(data)
 
     assert resolved == {
         'key_1': 1234,
@@ -139,7 +139,7 @@ def test_inplace():
         }
     }
 
-    resolved = resolve_local(data)
+    resolved = resolve(data)
 
     assert resolved is data
     assert data['some_ref'] == 'stuff'
