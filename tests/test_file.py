@@ -28,6 +28,37 @@ def test_basic(tmpdir):
     }
 
 
+def test_external_only(tmpdir):
+    root_dir = tmpdir.mkdir('root_dir')
+    root_doc = root_dir.join('root.json')
+
+    file_data = {
+        'some': 'in_file_data'
+    }
+
+    root_doc.write(json.dumps(file_data))
+
+    data = {
+        'inline': 'data',
+        'internal_ref': {
+            '$ref': '#/inline'
+        },
+        'file_ref': {
+            '$ref': f"{str(root_doc)}#/some"
+        }
+    }
+
+    resolved = resolve(data, external_only=True)
+
+    assert resolved == {
+        'inline': 'data',
+        'file_ref': 'in_file_data',
+        'internal_ref': {
+            '$ref': '#/inline'
+        }
+    }
+
+
 def test_yaml(tmpdir):
     root_dir = tmpdir.mkdir('root_dir')
     root_doc = root_dir.join('root.yaml')

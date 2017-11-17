@@ -20,11 +20,12 @@ class DecodeError(ResolutionError):
     pass
 
 
-def resolve(data, root=None, cwd=None):
+def resolve(data, root=None, cwd=None, *, external_only=False):
     if not isinstance(data, dict):
         if isinstance(data, list):
             for i, item in enumerate(data):
-                data[i] = resolve(item, root, cwd)
+                data[i] = resolve(item, root, cwd,
+                                  external_only=external_only)
 
         return data
 
@@ -33,18 +34,22 @@ def resolve(data, root=None, cwd=None):
 
     if '$ref' not in data:
         for subkey in data:
-            data[subkey] = resolve(data[subkey], root, cwd)
+            data[subkey] = resolve(data[subkey], root, cwd,
+                                   external_only=external_only)
 
         return data
 
     ref = data['$ref']
 
     if ref.startswith('#'):
-        return resolve_internal(ref, root)
+        if not external_only:
+            return resolve_internal(ref, root)
+
+        return data
     elif ref.startswith('http://') or ref.startswith('https://'):
         raise ResolutionError("Web resolution is not implemented yet")
     else:
-        return resolve_file(ref, cwd)
+        return resolve_file(ref, cwd, external_only=external_only)
 
 
 def _follow_path(ref: str, data: dict):
@@ -72,7 +77,7 @@ def resolve_internal(ref: str, root: dict):
     return resolve(ref_data, root=root)
 
 
-def resolve_file(ref: str, cwd: str):
+def resolve_file(ref: str, cwd: str, *, external_only=False):
     ref_split = ref.split('#')
 
     if len(ref_split) == 1:
@@ -97,7 +102,8 @@ def resolve_file(ref: str, cwd: str):
 
     new_cwd = os.path.dirname(path)
 
-    return resolve(data, root=file_data, cwd=new_cwd)
+    return resolve(data, root=file_data, cwd=new_cwd,
+                   external_only=external_only)
 
 
 def read_file(path):
