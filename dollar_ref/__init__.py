@@ -16,6 +16,10 @@ class FileResolutionError(ResolutionError):
     pass
 
 
+class DecodeError(ResolutionError):
+    pass
+
+
 def resolve(data, root=None, cwd=None):
     if not isinstance(data, dict):
         if isinstance(data, list):
@@ -75,8 +79,6 @@ def resolve_file(ref: str, cwd: str):
         path, in_ref = ref_split[0], ''
     elif len(ref_split) == 2:
         path, in_ref = ref_split
-    else:
-        pass  # notify error
 
     in_ref = f"#{in_ref}"
 
@@ -102,9 +104,14 @@ def read_file(path):
     with open(path, 'r') as file:
         raw = file.read()
 
-        if raw.startswith('---'):
-            data = yaml.load(raw)
-        else:
-            data = json.loads(raw)
+        try:
+            if raw.startswith('---'):
+                data = yaml.load(raw)
+            else:
+                data = json.loads(raw)
+        except json.decoder.JSONDecodeError as exc:
+            raise DecodeError(
+                f"Error decoding '{path}' file."
+            ) from exc
 
     return data
