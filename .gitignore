@@ -1,5 +1,5 @@
 # Byte-compiled / optimized / DLL files
-__pycache__/
+**/__pycache__/
 *.py[cod]
 *$py.class
 
@@ -99,3 +99,6 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+# macOS
+.DS_Store

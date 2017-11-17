@@ -1,0 +1,12 @@
+language: python
+python:
+  - "3.6"
+install:
+  - "pip install pipenv"
+script:
+    - "make build"
+after_success:
+  - "codecov"
+branches:
+  only:
+    - master
