@@ -4,6 +4,18 @@ import json
 import yaml
 
 
+class ResolutionError(Exception):
+    pass
+
+
+class InternalResolutionError(ResolutionError):
+    pass
+
+
+class FileResolutionError(ResolutionError):
+    pass
+
+
 def resolve(data, root=None, cwd=None):
     if not isinstance(data, dict):
         if isinstance(data, list):
@@ -26,7 +38,7 @@ def resolve(data, root=None, cwd=None):
     if ref.startswith('#'):
         return resolve_internal(ref, root)
     elif ref.startswith('http://') or ref.startswith('https://'):
-        pass  # Not Implemented
+        raise ResolutionError("Web resolution is not implemented yet")
     else:
         return resolve_file(ref, cwd)
 
@@ -39,7 +51,13 @@ def _follow_path(ref: str, data: dict):
 
     ref_data = data
     for path_item in ref_path:
-        ref_data = ref_data[path_item]
+        try:
+            ref_data = ref_data[path_item]
+        except KeyError:
+            raise InternalResolutionError(
+                f"Error resolving '{ref}', "
+                f"'{path_item}' not found in '{ref_data}'."
+            )
 
     return ref_data
 
@@ -65,7 +83,13 @@ def resolve_file(ref: str, cwd: str):
     if not os.path.isabs(path):
         path = os.path.join(cwd, path)
 
-    file_data = read_file(path)
+    try:
+        file_data = read_file(path)
+    except FileNotFoundError:
+        raise FileResolutionError(
+            f"Error resolving '{ref}', "
+            f"'{path}' file not found."
+        )
 
     data = _follow_path(in_ref, file_data)
 
