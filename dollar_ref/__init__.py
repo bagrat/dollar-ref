@@ -115,3 +115,11 @@ def read_file(path):
             ) from exc
 
     return data
+
+
+def pluck(root, *path):
+    data = root
+    for path_item in path:
+        data = data[path_item]
+
+    return resolve(data, root)
