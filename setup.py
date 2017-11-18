@@ -1,15 +1,18 @@
 from setuptools import setup
 
 
+with open('README.md', 'r') as f:
+    README = f.read()
+
+
 setup(
     name='dollar-ref',
     version='0.1',
 
-    description='JSON Reference Magic',
-    long_description="""
-    """,
+    description='JSON Reference Resolution',
+    long_description=README,
 
-    url='http://dref.bagrat.io',
+    url='https://github.com/bagrat/dollar-ref',
 
     author='Bagrat Aznauryan',
     author_email='contact@bagrat.io',
@@ -33,7 +36,7 @@ setup(
         'Topic :: Software Development :: Libraries :: Application Frameworks',
     ],
 
-    keywords='json schema ref reference',
+    keywords='json schema ref reference openapi yaml resolve',
 
     packages=['dollar_ref'],
 
