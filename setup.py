@@ -22,6 +22,8 @@ setup(
     classifiers=[
         'Development Status :: 3 - Alpha',
 
+        'Environment :: Console'
+
         'Intended Audience :: Developers',
         'Intended Audience :: Information Technology',
 
@@ -33,7 +35,9 @@ setup(
 
         'Topic :: Software Development',
         'Topic :: Software Development :: Libraries',
-        'Topic :: Software Development :: Libraries :: Application Frameworks',
+        'Topic :: Software Development :: Libraries :: Python Modules'
+
+        'Topic :: Utilities'
     ],
 
     keywords='json schema ref reference openapi yaml resolve',
