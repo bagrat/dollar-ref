@@ -15,7 +15,7 @@ build: clean
 	@echo "[INFO] installing the package"
 	python setup.py install
 	@echo "[INFO] running tests"
-	pipenv run pytest --cov=dollar_ref --cov-config .coveragerc -v --tb=long
+	pipenv run pytest --cov=dollar_ref --cov-config=.coveragerc --cov-report=xml:coverage.xml -v --tb=long
 
 clean:
 	@echo "[INFO] Removing all *.pyc files..."

@@ -6,7 +6,7 @@ install:
 script:
     - "make build"
 after_success:
-  - "codecov"
+  - "python-codacy-coverage -r coverage.xml"
 branches:
   only:
     - master
