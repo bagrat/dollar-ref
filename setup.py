@@ -35,7 +35,7 @@ setup(
 
     keywords='json schema ref reference',
 
-    packages=find_packages(exclude=['docs', 'tests']),
+    packages=['dollar_ref'],
 
     install_requires=[
         'PyYAML',
