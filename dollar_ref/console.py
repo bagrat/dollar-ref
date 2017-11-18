@@ -23,7 +23,7 @@ class DrefLogFormatter(logging.Formatter):
         logging.INFO: 'white'
     }
     prefixes = {
-        logging.ERROR: 'Error'
+        logging.ERROR: 'Error: '
     }
 
     def __init__(self, use_color=True):
@@ -34,7 +34,7 @@ class DrefLogFormatter(logging.Formatter):
     def format(self, record):
         prefix = self.prefixes.get(record.levelno, '')
 
-        return self.color_message(f'{prefix}: {record.msg}',
+        return self.color_message(f'{prefix}{record.msg}',
                                   record.levelno)
 
     def color_message(self, msg, levelno):
@@ -70,8 +70,8 @@ def parse_args(args):
     return parser.parse_args(args)
 
 
-def main(args=sys.argv):
-    args = parse_args(args)
+def main(args=None):
+    args = parse_args(sys.argv[1:] if args is None else args)
 
     log_level = VERBOSITY.get(args.verbosity, logging.INFO)
 
@@ -80,16 +80,15 @@ def main(args=sys.argv):
     out_handler.addFilter(DrefLogFilter(logging.WARN,
                                         logging.INFO,
                                         logging.DEBUG))
-    out_handler.setLevel(log_level)
 
     err_handler = logging.StreamHandler(sys.stderr)
     err_handler.setFormatter(DrefLogFormatter(use_color=sys.stderr.isatty()))
     err_handler.addFilter(DrefLogFilter(logging.ERROR))
-    err_handler.setLevel(log_level)
 
     log = logging.getLogger('dollar-ref')
     log.addHandler(out_handler)
     log.addHandler(err_handler)
+    log.setLevel(log_level)
 
     try:
         data = read_file(args.input_uri)
@@ -104,7 +103,9 @@ def main(args=sys.argv):
 
         with open(args.output_file, 'w') as out:
             if args.output_file.endswith(('yml', 'yaml')):
-                raw_out = yaml.dump(resolved)
+                raw_out = yaml.dump(resolved,
+                                    explicit_start=True,
+                                    default_flow_style=False)
             else:
                 raw_out = json.dumps(resolved)
 
@@ -115,3 +116,6 @@ def main(args=sys.argv):
     except ResolutionError as exc:
         log.error(str(exc))
         sys.exit(1)
+
+    log.info(f"Successfully resolved '{args.input_uri}' "
+             f"into '{args.output_file}'.")
