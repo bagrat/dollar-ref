@@ -112,6 +112,8 @@ def _follow_path(ref: str, data: dict) -> dict:
         try:
             ref_data = ref_data[path_item]
         except KeyError:
+            log.debug(f"Key '{path_item}' not found in '{ref_data}'"
+                      f"while resolving '{ref}'")
             raise InternalResolutionError(
                 f"Error resolving '{ref}', "
                 f"'{path_item}' not found in '{ref_data}'."
@@ -126,6 +128,8 @@ def resolve_internal(ref: str, root: dict) -> dict:
 
     The resolution is performed based on the `root` document.
     """
+    log.debug(f"Resolving internal reference '{ref}'.")
+
     ref_data = _follow_path(ref, root)
 
     return resolve(ref_data, root=root)
@@ -144,6 +148,8 @@ def resolve_file(ref: str, cwd: str, *, external_only: bool = False) -> dict:
     If `external_only` is `True`, the internal references of the referenced
     file contents are not resolved and are kept as is.
     """
+    log.debug(f"Resolving file reference '{ref}' with 'cwd = {cwd}'.")
+
     ref_split = ref.split('#')
 
     if len(ref_split) == 1:
@@ -179,13 +185,19 @@ def read_file(path: str) -> dict:
     This function automatically detects whether the file is a JSON or YAML
     and decodes accordingly.
     """
+    log.debug(f"Reading file '{path}'.")
+
     with open(path, 'r') as file:
         raw = file.read()
 
         try:
             if raw.startswith('---'):
+                log.debug(f"Decoding file '{path}' YAML.")
+
                 data = yaml.load(raw)
             else:
+                log.debug(f"Decoding file '{path}' JSON.")
+
                 data = json.loads(raw)
         except json.decoder.JSONDecodeError as exc:
             raise DecodeError(
@@ -195,7 +207,7 @@ def read_file(path: str) -> dict:
     return data
 
 
-def pluck(root, *path):
+def pluck(root: dict, *path: str):
     data = root
     for path_item in path:
         data = data[path_item]
