@@ -208,6 +208,15 @@ def read_file(path: str) -> dict:
 
 
 def pluck(root: dict, *path: str):
+    """
+    Pluck the object at `path` in the `root` object.
+
+    The `path` should be the path to the desired object in a form of a
+    tuple of keys.
+
+    While getting the requested object, this function also resolves all
+    the references found in the requested object.
+    """
     data = root
     for path_item in path:
         data = data[path_item]
