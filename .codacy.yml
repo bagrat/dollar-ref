@@ -1,4 +1,5 @@
 ---
 exclude_paths:
   - 'tests/**'
-  - docs
+  - 'examples/**'
+  - 'docs'
