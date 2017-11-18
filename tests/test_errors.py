@@ -1,5 +1,3 @@
-import json
-
 from pytest import raises
 
 from dollar_ref import (

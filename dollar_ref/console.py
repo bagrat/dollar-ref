@@ -46,7 +46,7 @@ class DrefLogFormatter(logging.Formatter):
         return colored(msg, color)
 
 
-class DrefLogFilter(logging.Filter):
+class DrefLogFilter(logging.Filter):  # pylint: disable=too-few-public-methods
     def __init__(self, *levels):
         super().__init__()
 

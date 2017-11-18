@@ -64,7 +64,7 @@ def test_empty():
 
 
 def test_non_dict():
-    assert 1234 == resolve(1234)
+    assert resolve(1234) == 1234
 
 
 def test_list():
