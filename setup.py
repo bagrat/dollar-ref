@@ -22,7 +22,7 @@ setup(
     classifiers=[
         'Development Status :: 3 - Alpha',
 
-        'Environment :: Console'
+        'Environment :: Console',
 
         'Intended Audience :: Developers',
         'Intended Audience :: Information Technology',
@@ -35,7 +35,7 @@ setup(
 
         'Topic :: Software Development',
         'Topic :: Software Development :: Libraries',
-        'Topic :: Software Development :: Libraries :: Python Modules'
+        'Topic :: Software Development :: Libraries :: Python Modules',
 
         'Topic :: Utilities'
     ],
