@@ -72,12 +72,22 @@ def parse_args(args):
     """
     Parse and return the command line arguments.
     """
-    parser = argparse.ArgumentParser()
-    parser.add_argument('input_uri', help='')
-    parser.add_argument('output_file', help='')
+    parser = argparse.ArgumentParser(
+        description=('Read a JSON/YAML file and output the same document '
+                     'with all the external JSON References resolved.')
+    )
+    parser.add_argument(
+        'input_uri',
+        help=('the input document URI. '
+              'This could be an absolute or relative file path.')
+    )
+    parser.add_argument(
+        'output_file',
+        help='the filename to write the resolved output to.'
+    )
     parser.add_argument("-v", "--verbosity",
                         action="count", default=0,
-                        help='')
+                        help='increase program output verbosity.')
 
     return parser.parse_args(args)
 
