@@ -1,3 +1,6 @@
+"""
+Main functionality of `dollar-ref` library.
+"""
 import os
 import logging
 import json
@@ -6,25 +9,52 @@ import yaml
 
 
 class ResolutionError(Exception):
+    """
+    General error that happens during resolution.
+    """
     pass
 
 
 class InternalResolutionError(ResolutionError):
+    """
+    Error while resolving internal referenses.
+    """
     pass
 
 
 class FileResolutionError(ResolutionError):
+    """
+    Error while resolving a reference to another file.
+    """
     pass
 
 
 class DecodeError(ResolutionError):
+    """
+    Error while deciding a referenced file.
+    """
     pass
 
 
 log = logging.getLogger('dollar-ref.lib')
 
 
-def resolve(data, root=None, cwd=None, *, external_only=False):
+def resolve(data, root=None, cwd: str = None,
+            *, external_only: bool = False) -> dict:
+    """
+    Recursively resolve any references in `data` **inplace**.
+
+    If `root` is provided, all internal references are resolved relative
+    to that document.
+
+    If `cwd` is provided, all external references are resolved relative
+    to that path.
+
+    If `external_only` is passed as `True` then only external references
+    are reloved.
+
+    Additionally, returns the resolved document.
+    """
     if not isinstance(data, dict):
         if isinstance(data, list):
             for i, item in enumerate(data):
@@ -56,7 +86,22 @@ def resolve(data, root=None, cwd=None, *, external_only=False):
         return resolve_file(ref, cwd, external_only=external_only)
 
 
-def _follow_path(ref: str, data: dict):
+def _follow_path(ref: str, data: dict) -> dict:
+    """
+    Returns the object from `data` at `ref`.
+
+    Example:
+        Given:
+            data = {
+                'key1': {
+                    'key2': 'value'
+                }
+            }
+            ref = '#/key1/key2'
+
+        The result will be:
+            'value'
+    """
     if ref in ('', '#', '#/'):
         return data
 
@@ -75,13 +120,30 @@ def _follow_path(ref: str, data: dict):
     return ref_data
 
 
-def resolve_internal(ref: str, root: dict):
+def resolve_internal(ref: str, root: dict) -> dict:
+    """
+    Resolve an internal reference specified by `ref`.
+
+    The resolution is performed based on the `root` document.
+    """
     ref_data = _follow_path(ref, root)
 
     return resolve(ref_data, root=root)
 
 
-def resolve_file(ref: str, cwd: str, *, external_only=False):
+def resolve_file(ref: str, cwd: str, *, external_only: bool = False) -> dict:
+    """
+    Resolve an external file reference specified by `ref`.
+
+    This function also recursively resolves the contents of the referenced
+    file.
+
+    If the reference is not an absolute path, then is is resolved relative
+    to `cwd`.
+
+    If `external_only` is `True`, the internal references of the referenced
+    file contents are not resolved and are kept as is.
+    """
     ref_split = ref.split('#')
 
     if len(ref_split) == 1:
@@ -110,7 +172,13 @@ def resolve_file(ref: str, cwd: str, *, external_only=False):
                    external_only=external_only)
 
 
-def read_file(path):
+def read_file(path: str) -> dict:
+    """
+    Read and decode a file specified by `path`.
+
+    This function automatically detects whether the file is a JSON or YAML
+    and decodes accordingly.
+    """
     with open(path, 'r') as file:
         raw = file.read()
 

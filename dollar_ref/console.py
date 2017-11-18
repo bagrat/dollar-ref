@@ -1,3 +1,6 @@
+"""
+The implementation of the command line tool `dref`.
+"""
 import argparse
 import os
 import json
@@ -17,6 +20,9 @@ VERBOSITY = {
 
 
 class DrefLogFormatter(logging.Formatter):
+    """
+    Formats the log records by coloring and adding prefixes.
+    """
     colors = {
         logging.ERROR: 'red',
         logging.DEBUG: 'blue',
@@ -47,6 +53,9 @@ class DrefLogFormatter(logging.Formatter):
 
 
 class DrefLogFilter(logging.Filter):  # pylint: disable=too-few-public-methods
+    """
+    Filters the log records based on their level.
+    """
     def __init__(self, *levels):
         super().__init__()
 
@@ -60,6 +69,9 @@ class DrefLogFilter(logging.Filter):  # pylint: disable=too-few-public-methods
 
 
 def parse_args(args):
+    """
+    Parse and return the command line arguments.
+    """
     parser = argparse.ArgumentParser()
     parser.add_argument('input_uri', help='')
     parser.add_argument('output_file', help='')
@@ -70,8 +82,22 @@ def parse_args(args):
     return parser.parse_args(args)
 
 
-def main(args=None):
-    args = parse_args(sys.argv[1:] if args is None else args)
+def main(custom_args: list = None):
+    """
+    The main entry point of the `dref` command line tool.
+
+    Accepts two positional arguments:
+        input_uri - the input document to be resolved.
+        output_file - the output file for resolved data.
+
+    If the `output_file` extension is `yaml` or `yml`, the output
+    format will be YAML, otherwise JSON.
+
+    The program may be used from inside other python programs by calling
+    this function, and passing the arguments as the `custom_args` function
+    argument as a `list`. By default, the `sys.argv` is used.
+    """
+    args = parse_args(sys.argv[1:] if custom_args is None else custom_args)
 
     log_level = VERBOSITY.get(args.verbosity, logging.INFO)
 
