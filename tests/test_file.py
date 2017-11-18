@@ -59,29 +59,6 @@ def test_external_only(tmpdir):
     }
 
 
-def test_yaml(tmpdir):
-    root_dir = tmpdir.mkdir('root_dir')
-    root_doc = root_dir.join('root.yaml')
-
-    root_doc.write('''---
-        hello: yaml
-        thing:
-            '$ref': '#/hello'
-    ''')
-
-    data = {
-        'inline': 'data',
-        'file_ref': {
-            '$ref': f"{str(root_doc)}#/thing"
-        }
-    }
-
-    resolved = resolve(data)
-
-    assert resolved == {
-        'inline': 'data',
-        'file_ref': 'yaml'
-    }
 
 
 def test_not_dict(tmpdir):

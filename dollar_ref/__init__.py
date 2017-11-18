@@ -17,6 +17,10 @@ class FileResolutionError(ResolutionError):
     pass
 
 
+
+
+
+
 class DecodeError(ResolutionError):
     pass
 

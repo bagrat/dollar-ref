@@ -111,11 +111,3 @@ def test_from_cmd_line(script_runner):
                                  "was not found.\n")
 
 
-def test_color_fromatter():
-    formatter = DrefLogFormatter(use_color=True)
-
-    record = Mock()
-    record.levelno = logging.ERROR
-    record.msg = 'hello'
-
-    assert formatter.format(record) == colored('Error: hello', 'red')
