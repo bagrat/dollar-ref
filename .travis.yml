@@ -7,6 +7,3 @@ script:
     - "make build"
 after_success:
   - "python-codacy-coverage -r coverage.xml"
-branches:
-  only:
-    - master
