@@ -60,6 +60,12 @@ def resolve(data, root=None, cwd=None, *, external_only=False):
         return resolve_file(ref, cwd, external_only=external_only)
 
 
+
+
+def SomeUnUsedFunctionnn():
+    taganrok
+
+
 def _follow_path(ref: str, data: dict):
     if ref in ('', '#', '#/'):
         return data
