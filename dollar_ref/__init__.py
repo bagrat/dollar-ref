@@ -1,4 +1,5 @@
 import os
+import logging
 import json
 
 import yaml
@@ -18,6 +19,9 @@ class FileResolutionError(ResolutionError):
 
 class DecodeError(ResolutionError):
     pass
+
+
+log = logging.getLogger('dollar-ref.lib')
 
 
 def resolve(data, root=None, cwd=None, *, external_only=False):
@@ -46,7 +50,7 @@ def resolve(data, root=None, cwd=None, *, external_only=False):
             return resolve_internal(ref, root)
 
         return data
-    elif ref.startswith('http://') or ref.startswith('https://'):
+    elif ref.startswith(('http://', 'https://')):
         raise ResolutionError("Web resolution is not implemented yet")
     else:
         return resolve_file(ref, cwd, external_only=external_only)
@@ -94,7 +98,7 @@ def resolve_file(ref: str, cwd: str, *, external_only=False):
         file_data = read_file(path)
     except FileNotFoundError:
         raise FileResolutionError(
-            f"Error resolving '{ref}', "
+            f"Could not resolve '{ref}', "
             f"'{path}' file not found."
         )
 

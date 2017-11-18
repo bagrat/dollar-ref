@@ -38,6 +38,13 @@ setup(
     packages=find_packages(exclude=['docs', 'tests']),
 
     install_requires=[
-        'PyYAML'
+        'PyYAML',
+        'termcolor'
     ],
+
+    entry_points={
+        'console_scripts': [
+            'dref=dollar_ref.console:main'
+        ]
+    }
 )
