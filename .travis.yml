@@ -4,6 +4,6 @@ python:
 install:
   - "pip install pipenv"
 script:
-    - "make build"
+  - "make build"
 after_success:
   - "python-codacy-coverage -r coverage.xml"
