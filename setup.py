@@ -7,7 +7,7 @@ with open('README.md', 'r') as f:
 
 setup(
     name='dollar-ref',
-    version='0.1',
+    version='0.1.1',
 
     description='JSON Reference Resolution',
     long_description=README,
