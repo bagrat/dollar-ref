@@ -1,4 +1,5 @@
 import json
+import yaml
 
 from dollar_ref import resolve
 
@@ -156,6 +157,44 @@ def test_nested(tmpdir):
         }
     }
     child_doc.write(json.dumps(child_data))
+
+    data = {
+        'file_ref': {
+            '$ref': f'{str(root_doc)}#/some_ref'
+        }
+    }
+
+    resolved = resolve(data)
+
+    assert resolved == {
+        'file_ref': 'useful data'
+    }
+
+
+def test_nested_yaml(tmpdir):
+    root_dir = tmpdir.mkdir('root_dir')
+
+    root_doc = root_dir.join('root.yaml')
+    root_data = {
+        'some': 'stuff',
+        'some_ref': {
+            '$ref': 'child_dir/child.yaml#/some_key/child_key'
+        }
+    }
+    root_doc.write(yaml.dump(root_data, default_flow_style=False))
+
+    child_doc = root_dir.mkdir('child_dir').join('child.yaml')
+    child_data = {
+        'some': 'useless thing',
+        'now': 'useful data',
+        'some_key': {
+            'another': 'useless thing',
+            'child_key': {
+                '$ref': '#/now'
+            }
+        }
+    }
+    child_doc.write(yaml.dump(child_data, default_flow_style=False))
 
     data = {
         'file_ref': {

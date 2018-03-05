@@ -184,26 +184,36 @@ def read_file(path: str) -> dict:
 
     This function automatically detects whether the file is a JSON or YAML
     and decodes accordingly.
+
+    Detection is based on the filename with files ending in .yml or yaml
+    loaded as yaml. Yaml file contents may begin with ---
+    http://yaml.org/spec/1.0/#id2561718 therefore
+    this is another possible criterion. Any data not fitting these criteria
+    is parsed as JSON.
     """
     log.debug(f"Reading file '{path}'.")
 
     with open(path, 'r') as file:
         raw = file.read()
+        if raw.startswith('---') or any(
+                [path.lower().endswith(s) for s in ['.yaml', '.yml']]):
+            log.debug(f"Decoding file '{path}' YAML.")
 
-        try:
-            if raw.startswith('---'):
-                log.debug(f"Decoding file '{path}' YAML.")
-
+            try:
                 data = yaml.load(raw)
-            else:
-                log.debug(f"Decoding file '{path}' JSON.")
+            except yaml.YAMLError as exc:
+                raise DecodeError(
+                    f"Error decoding '{path}' file."
+                ) from exc
+        else:
+            log.debug(f"Decoding file '{path}' JSON.")
 
+            try:
                 data = json.loads(raw)
-        except json.decoder.JSONDecodeError as exc:
-            raise DecodeError(
-                f"Error decoding '{path}' file."
-            ) from exc
-
+            except json.decoder.JSONDecodeError as exc:
+                raise DecodeError(
+                    f"Error decoding '{path}' file."
+                ) from exc
     return data
 
 
