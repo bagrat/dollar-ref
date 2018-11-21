@@ -88,7 +88,9 @@ def parse_args(args):
     parser.add_argument("-v", "--verbosity",
                         action="count", default=0,
                         help='increase program output verbosity.')
-
+    parser.add_argument('-i', '--internal',
+                        help='resolve internal references',
+                        default=True, action='store_false')
     return parser.parse_args(args)
 
 
@@ -134,8 +136,7 @@ def main(custom_args: list = None):
         sys.exit(1)
 
     try:
-        resolved = resolve(data, cwd=cwd,
-                           external_only=True)
+        resolved = resolve(data, cwd=cwd, external_only=args.internal)
 
         with open(args.output_file, 'w') as out:
             if args.output_file.endswith(('yml', 'yaml')):
