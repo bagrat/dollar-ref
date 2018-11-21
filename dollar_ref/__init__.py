@@ -77,7 +77,7 @@ def resolve(data, root=None, cwd: str = None,
 
     if ref.startswith('#'):
         if not external_only:
-            return resolve_internal(ref, root)
+            return resolve_internal(ref, root, cwd=cwd)
 
         return data
     elif ref.startswith(('http://', 'https://')):
@@ -122,7 +122,7 @@ def _follow_path(ref: str, data: dict) -> dict:
     return ref_data
 
 
-def resolve_internal(ref: str, root: dict) -> dict:
+def resolve_internal(ref: str, root: dict, cwd: str = None) -> dict:
     """
     Resolve an internal reference specified by `ref`.
 
@@ -132,7 +132,7 @@ def resolve_internal(ref: str, root: dict) -> dict:
 
     ref_data = _follow_path(ref, root)
 
-    return resolve(ref_data, root=root)
+    return resolve(ref_data, root=root, cwd=cwd, external_only=False)
 
 
 def resolve_file(ref: str, cwd: str, *, external_only: bool = False) -> dict:
