@@ -200,7 +200,7 @@ def read_file(path: str) -> dict:
             log.debug(f"Decoding file '{path}' YAML.")
 
             try:
-                data = yaml.load(raw)
+                data = yaml.load(raw, Loader=yaml.FullLoader)
             except yaml.YAMLError as exc:
                 raise DecodeError(
                     f"Error decoding '{path}' file."
