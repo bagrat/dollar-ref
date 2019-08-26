@@ -1,16 +1,13 @@
 from setuptools import setup
 
 
-with open('README.md', 'r') as f:
-    README = f.read()
-
-
 setup(
     name='dollar-ref',
-    version='0.1.1',
+    version='0.1.3',
 
     description='JSON Reference Resolution',
-    long_description=README,
+    long_description="Both a command line tool and a library for resolving JSON references,"
+    "which let's you easily split your JSON or YAML files and then merge on demand.",
 
     url='https://github.com/bagrat/dollar-ref',
 
